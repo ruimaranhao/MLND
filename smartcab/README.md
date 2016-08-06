@@ -63,3 +63,17 @@ deliver its passenger to its destination.
 The results are not very encouraging: most of the times the agent does not
 reach the final destination, and for those cases that it managed to reach
 the final destination, it took more than needed.
+
+## Task 2: Implement a Q-Learning Driving Agent
+
+> Your final task for this project is to enhance your driving agent so that, after sufficient training, the smartcab is able to reach the destination within the allotted time safely and efficiently. Parameters in the Q-Learning algorithm, such as the learning rate (alpha), the discount factor (gamma) and the exploration rate (epsilon) all contribute to the driving agent’s ability to learn the best action for each state. To improve on the success of your smartcab:
+
+> Set the number of trials, n_trials, in the simulation to 100.
+Run the simulation with the deadline enforcement enforce_deadline set to True (you will need to reduce the update delay update_delay and set the display to False).
+Observe the driving agent’s learning and smartcab’s success rate, particularly during the later trials.
+Adjust one or several of the above parameters and iterate this process.
+This task is complete once you have arrived at what you determine is the best combination of parameters required for your driving agent to learn successfully.
+
+> QUESTION: Report the different values for the parameters tuned in your basic implementation of Q-Learning. For which set of parameters does the agent perform best? How well does the final driving agent perform?
+
+> QUESTION: Does your agent get close to finding an optimal policy, i.e. reach the destination in the minimum possible time, and not incur any penalties? How would you describe an optimal policy for this problem?

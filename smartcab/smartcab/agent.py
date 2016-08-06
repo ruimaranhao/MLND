@@ -2,6 +2,7 @@ import random
 from environment import Agent, Environment
 from planner import RoutePlanner
 from simulator import Simulator
+from QLearningAgent import QLearningAgent
 
 class LearningAgent(Agent):
     """An agent that learns to drive in the smartcab world."""
@@ -46,6 +47,10 @@ class LearningAgent(Agent):
 
         current_env_state = self.env.sense(self)
 
+        # TODO: Update state
+        self.state = self.env.agent_states[self]
+        #print(self.state)
+
         # TODO: Select action according to your policy
         action = self.selectAction(current_env_state)
 
@@ -57,7 +62,10 @@ class LearningAgent(Agent):
             self.paction = action
             self.preward = reward
 
+        print self.state
+
         print "LearningAgent.update(): deadline = {}, inputs = {}, action = {}, reward = {}".format(deadline, inputs, action, reward)  # [debug]
+
 
 
 def run():
