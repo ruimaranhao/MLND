@@ -13,9 +13,11 @@ class LearningAgent(Agent):
         self.planner = RoutePlanner(self.env, self)  # simple route planner to get next_waypoint
         # TODO: Initialize any additional variables here
         self.valid_actions = {}
+        self.posreward = 0
+        self.negreward = 0
+        self.nreached = 0
 
     def reset(self, destination=None):
-        print "Resetting data..."
         self.planner.route_to(destination)
         # TODO: Prepare for a new trip; reset any variables here, if required
         self.state = None
@@ -48,8 +50,18 @@ class LearningAgent(Agent):
         # TODO: Learn policy based on state, action, reward
         if reward >= 0:
             self.valid_actions[self.state] = list(set(self.valid_actions.get(self.state, []) + [action]))
+            self.posreward += 1.0
+        else:
+            self.negreward += 1.0
 
-        #print "LearningAgent.update(): deadline = {}, inputs = {}, action = {}, reward = {}".format(deadline, inputs, action, reward)  # [debug]
+        if self.env.get_done():
+            self.nreached += 1.0
+
+        print "LearningAgent.update(): deadline = {}, inputs = {}, action = {}, reward = {}".format(deadline, inputs, action, reward)  # [debug]
+        print("Deadline: {}, Neg: {} , Pos: {}, Reach: {}".format(deadline,
+                            self.negreward / (self.negreward + self.posreward),
+                            self.posreward / (self.negreward + self.posreward),
+                            self.nreached))
 
 
 def run():

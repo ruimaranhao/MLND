@@ -36,33 +36,55 @@ To complete this task, simply have your driving agent choose a random action fro
 
 >QUESTION: Observe what you see with the agent's behavior as it takes random actions. Does the smartcab eventually make it to the destination? Are there any other interesting observations to note?
 
-I have decided to implement two basic driving agents. One does not take into
-account the U.S. Righ-of-Way rules
+I have decided to implement a basic driving agent. It learns over time which
+actions lead to a positive reward and do not take any actions that have been
+observed to give negative rewards:
 
-```
-action = self.selectAction(current_env_state, True)
-```
-
-and another one that does take into account the following
-
-* On a green light, a left turn is permitted if there is no oncoming traffic making a right turn or coming straight through the intersection.
-
-* On a red light, a right turn is permitted if no oncoming traffic is approaching from your left through the intersection.
-
-```        
-action = self.selectAction(current_env_state)
+```Python
+# TODO: Learn policy based on state, action, reward
+if reward >= 0:
+    self.valid_actions[self.state] = list(set(self.valid_actions.get(self.state, []) + [action]))
+    self.posreward += 1.0
+else:
+    self.negreward += 1.0
 ```
 
-This latter option only performs legal action. Therefore it does not get less
-than -0.5 reward.
+and
 
-To test these basic agents, I have executed it 100 times (trials). In terms
-of performance metric, I have selected the speed with which the cab can
-deliver its passenger to its destination.
+```Python
+action = self.policy(self.state)
+```
+
+To test the basic agent, I have executed it 100 times (trials). In terms
+of performance metric, I use the the speed with which the cab can deliver
+its passenger to its destination as well as the ration of actions that
+give negative and positive rewards.
 
 The results are not very encouraging: most of the times the agent does not
-reach the final destination, and for those cases that it managed to reach
-the final destination, it took more than needed.
+reach the final destination. The statistics:
+- Overall, 2% of the actions gave a negative reward
+- Overall, 98% of the actions gave a positive reward
+- Only reached the destination in 2% of the trials
+
+This means that the smartcab takes a defensive drive, but at the cost of not
+getting to the final destination often.
+
+
+I have decided to compare this results with an even more naive approach: at
+any given point, the smartcab would take one of the any valid inputs.
+
+```Python
+action = self.policy(self.state, True)
+```
+
+The statistics for this version are not very encouraging:
+- Overall, 55% of the actions gave a negative reward
+- Overall, 45% of the actions gave a positive reward
+- Only reached the destination in 19% of the trials
+
+This means that the smartcab needs more time to reach the final destination.
+However, a concerning factor is the fact that it takes risky actions, which
+is undesirable in this domain (e.g., accidents may occur)
 
 ## Task 2: Implement a Q-Learning Driving Agent
 

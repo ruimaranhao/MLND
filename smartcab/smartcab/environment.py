@@ -33,7 +33,7 @@ class Environment(object):
 
     def __init__(self, num_dummies=3):
         self.num_dummies = num_dummies  # no. of dummy agents
-        
+
         # Initialize simulation variables
         self.done = False
         self.t = 0
@@ -160,6 +160,9 @@ class Environment(object):
 
     def get_deadline(self, agent):
         return self.agent_states[agent]['deadline'] if agent is self.primary_agent else None
+
+    def get_done(self):
+        return self.done
 
     def act(self, agent, action):
         assert agent in self.agent_states, "Unknown agent!"
