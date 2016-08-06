@@ -8,13 +8,35 @@ class LearningAgent(Agent):
 
     def __init__(self, env):
         super(LearningAgent, self).__init__(env)  # sets self.env = env, state = None, next_waypoint = None, and a default color
-        self.color = 'red'  # override color
+        self.color = 'yellow'  # override color
         self.planner = RoutePlanner(self.env, self)  # simple route planner to get next_waypoint
-        # TODO: Initialize any additional variables here
+        self.preward = 0 #previous reward
+        self.paction = None #previous action
 
     def reset(self, destination=None):
         self.planner.route_to(destination)
-        # TODO: Prepare for a new trip; reset any variables here, if required
+        self.preward = 0
+        self.paction = None
+
+    def selectAction(self, env, naive = False):
+        if naive:
+            return random.choice([None, 'forward', 'left', 'right'])
+
+        lactions = []
+
+        if(env['light'] == 'red'):
+            if(env['oncoming'] != 'left'):
+                lactions = [None, 'right']
+            else:
+                lactions = [None] #I was expecting this to be correct, but it leads to -1 rewards... if lactions = [] then it does not happen... which makes sense (for naive = False). Any ideia why?
+        else:
+            # traffic ligh is gree and now check for oncoming
+            if(env['oncoming'] == 'forward'): #if no oncoming
+                lactions = [ 'forward', 'right' ]
+            else: #no incoming traffic
+                lactions = ['right', 'forward', 'left']
+
+        return random.choice(lactions)
 
     def update(self, t):
         # Gather inputs
@@ -22,15 +44,18 @@ class LearningAgent(Agent):
         inputs = self.env.sense(self)
         deadline = self.env.get_deadline(self)
 
-        # TODO: Update state
-        
+        current_env_state = self.env.sense(self)
+
         # TODO: Select action according to your policy
-        action = None
+        action = self.selectAction(current_env_state)
 
         # Execute action and get reward
         reward = self.env.act(self, action)
 
         # TODO: Learn policy based on state, action, reward
+        if action:
+            self.paction = action
+            self.preward = reward
 
         print "LearningAgent.update(): deadline = {}, inputs = {}, action = {}, reward = {}".format(deadline, inputs, action, reward)  # [debug]
 
@@ -48,7 +73,7 @@ def run():
     sim = Simulator(e, update_delay=0.5, display=True)  # create simulator (uses pygame when display=True, if available)
     # NOTE: To speed up simulation, reduce update_delay and/or set display=False
 
-    sim.run(n_trials=100)  # run for a specified number of trials
+    sim.run(n_trials=1)  # run for a specified number of trials
     # NOTE: To quit midway, press Esc or close pygame window, or hit Ctrl+C on the command-line
 
 
