@@ -2,42 +2,21 @@ import random
 from environment import Agent, Environment
 from planner import RoutePlanner
 from simulator import Simulator
-from QLearningAgent import QLearningAgent
+
 
 class LearningAgent(Agent):
     """An agent that learns to drive in the smartcab world."""
 
     def __init__(self, env):
         super(LearningAgent, self).__init__(env)  # sets self.env = env, state = None, next_waypoint = None, and a default color
-        self.color = 'yellow'  # override color
+        self.color = 'red'  # override color
         self.planner = RoutePlanner(self.env, self)  # simple route planner to get next_waypoint
-        self.preward = 0 #previous reward
-        self.paction = None #previous action
+        # TODO: Initialize any additional variables here
 
     def reset(self, destination=None):
+        print "Resetting data..."
         self.planner.route_to(destination)
-        self.preward = 0
-        self.paction = None
-
-    def selectAction(self, env, naive = False):
-        if naive:
-            return random.choice([None, 'forward', 'left', 'right'])
-
-        lactions = []
-
-        if(env['light'] == 'red'):
-            if(env['oncoming'] != 'left'):
-                lactions = [None, 'right']
-            else:
-                lactions = [None] #I was expecting this to be correct, but it leads to -1 rewards... if lactions = [] then it does not happen... which makes sense (for naive = False). Any ideia why?
-        else:
-            # traffic ligh is gree and now check for oncoming
-            if(env['oncoming'] == 'forward'): #if no oncoming
-                lactions = [ 'forward', 'right' ]
-            else: #no incoming traffic
-                lactions = ['right', 'forward', 'left']
-
-        return random.choice(lactions)
+        # TODO: Prepare for a new trip; reset any variables here, if required
 
     def update(self, t):
         # Gather inputs
@@ -45,27 +24,17 @@ class LearningAgent(Agent):
         inputs = self.env.sense(self)
         deadline = self.env.get_deadline(self)
 
-        current_env_state = self.env.sense(self)
-
         # TODO: Update state
-        self.state = self.env.agent_states[self]
-        #print(self.state)
 
         # TODO: Select action according to your policy
-        action = self.selectAction(current_env_state)
+        action = None
 
         # Execute action and get reward
         reward = self.env.act(self, action)
 
         # TODO: Learn policy based on state, action, reward
-        if action:
-            self.paction = action
-            self.preward = reward
-
-        print self.state
 
         print "LearningAgent.update(): deadline = {}, inputs = {}, action = {}, reward = {}".format(deadline, inputs, action, reward)  # [debug]
-
 
 
 def run():
