@@ -9,14 +9,22 @@ class LearningAgent(Agent):
 
     def __init__(self, env):
         super(LearningAgent, self).__init__(env)  # sets self.env = env, state = None, next_waypoint = None, and a default color
-        self.color = 'red'  # override color
+        self.color = 'yellow'  # override color
         self.planner = RoutePlanner(self.env, self)  # simple route planner to get next_waypoint
         # TODO: Initialize any additional variables here
+        self.valid_actions = {}
 
     def reset(self, destination=None):
         print "Resetting data..."
         self.planner.route_to(destination)
         # TODO: Prepare for a new trip; reset any variables here, if required
+        self.state = None
+
+    def policy(self, state, rnd = False):
+        if rnd or len(self.valid_actions) == 0:
+            return random.choice(Environment.valid_actions)
+
+        return random.choice(self.valid_actions.get(state, Environment.valid_actions))
 
     def update(self, t):
         # Gather inputs
@@ -25,16 +33,23 @@ class LearningAgent(Agent):
         deadline = self.env.get_deadline(self)
 
         # TODO: Update state
+        self.state = (('nwp', self.next_waypoint),
+                      ('left', inputs['light']),
+                      ('oncoming', inputs['oncoming']),
+                      ('right', inputs['right']),
+                      ('left', inputs['left']))
 
         # TODO: Select action according to your policy
-        action = None
+        action = self.policy(self.state)
 
         # Execute action and get reward
         reward = self.env.act(self, action)
 
         # TODO: Learn policy based on state, action, reward
+        if reward >= 0:
+            self.valid_actions[self.state] = list(set(self.valid_actions.get(self.state, []) + [action]))
 
-        print "LearningAgent.update(): deadline = {}, inputs = {}, action = {}, reward = {}".format(deadline, inputs, action, reward)  # [debug]
+        #print "LearningAgent.update(): deadline = {}, inputs = {}, action = {}, reward = {}".format(deadline, inputs, action, reward)  # [debug]
 
 
 def run():
@@ -50,7 +65,7 @@ def run():
     sim = Simulator(e, update_delay=0.5, display=True)  # create simulator (uses pygame when display=True, if available)
     # NOTE: To speed up simulation, reduce update_delay and/or set display=False
 
-    sim.run(n_trials=1)  # run for a specified number of trials
+    sim.run(n_trials=100)  # run for a specified number of trials
     # NOTE: To quit midway, press Esc or close pygame window, or hit Ctrl+C on the command-line
 
 
