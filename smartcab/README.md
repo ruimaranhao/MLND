@@ -99,3 +99,25 @@ This task is complete once you have arrived at what you determine is the best co
 > QUESTION: Report the different values for the parameters tuned in your basic implementation of Q-Learning. For which set of parameters does the agent perform best? How well does the final driving agent perform?
 
 > QUESTION: Does your agent get close to finding an optimal policy, i.e. reach the destination in the minimum possible time, and not incur any penalties? How would you describe an optimal policy for this problem?
+
+Toggling between the simple Learning and the Q-Learning driving Agent is done
+by setting the following variable to False/True respectively:
+
+```python
+qlearner = True
+```
+
+I tuned the Q-Learner to use the following parameters:
+
+```python
+alpha = 0.5
+gamma = 0.2
+epsilon = 0.05
+```
+
+The statistics using these parameters are:
+
+The statistics for this version are not very encouraging:
+- Overall, 7% of the actions gave a negative reward
+- Overall, 93% of the actions gave a positive reward
+- The smartcab reached the destination, within the time limit, in 87% of the trials.
