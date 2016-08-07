@@ -121,3 +121,6 @@ The statistics for this version are not very encouraging:
 - Overall, 7% of the actions gave a negative reward
 - Overall, 93% of the actions gave a positive reward
 - The smartcab reached the destination, within the time limit, in 87% of the trials.
+The budget it took to finish is plotted below:
+
+![boxplot](MLND/smartcab/performance.png "boxplot")
