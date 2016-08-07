@@ -18,9 +18,9 @@ class LearningAgent(Agent):
         self.budget = []
         self.qlearn = qlearn
         if self.qlearn:
-            alpha = 0.5
-            gamma = 0.2
-            epsilon = 0.07
+            self.alpha = alpha
+            self.gamma = gamma
+            self.epsilon = epsilon
             self.ql = QLearner(Environment.valid_actions, alpha, gamma, epsilon)
         else:
             self.valid_actions = {}
@@ -45,9 +45,8 @@ class LearningAgent(Agent):
 
         # Update state
         self.state = (('nwp', self.next_waypoint),
-                      ('left', inputs['light']),
+                      ('light', inputs['light']),
                       ('oncoming', inputs['oncoming']),
-                      ('right', inputs['right']),
                       ('left', inputs['left']))
 
         # Select action according to your policy
@@ -63,9 +62,8 @@ class LearningAgent(Agent):
         if self.qlearn:
             ninputs = self.env.sense(self) #env after action / and state
             nstate = (('nwp', self.next_waypoint),
-                      ('left', inputs['light']),
+                      ('light', inputs['light']),
                       ('oncoming', inputs['oncoming']),
-                      ('right', inputs['right']),
                       ('left', inputs['left']))
             self.ql.learn(self.state, nstate, action, reward)
         else:

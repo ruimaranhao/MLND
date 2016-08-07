@@ -25,7 +25,7 @@ python -m smartcab.agent
 This will run the `agent.py` file and execute your agent code.
 
 
-## Task 1: Implement a Basic Driving Agent
+## Implement a Basic Driving Agent
 
 >To begin, your only task is to get the smartcab to move around in the environment. At this point, you will not be concerned with any sort of optimal driving policy. Note that the driving agent is given the following information at each intersection:
 
@@ -86,7 +86,34 @@ This means that the smartcab needs more time to reach the final destination.
 However, a concerning factor is the fact that it takes risky actions, which
 is undesirable in this domain (e.g., accidents may occur)
 
-## Task 2: Implement a Q-Learning Driving Agent
+### Inform the Driving Agent
+
+> QUESTION: What states have you identified that are appropriate for modeling the smartcab and environment? Why do you believe each of these states to be appropriate for this problem? Please discuss the included states and the omitted ones as well.
+
+Having in mind that at each intersection is a traffic light that either allows
+traffic in the North-South direction or the East-West direction and that the
+U.S. Right-of-Way rules apply
+
+- On a green light, a left turn is permitted if there is no oncoming traffic
+making a right turn or coming straight through the intersection.
+- On a red light, a right turn is permitted if no oncoming traffic is approaching
+from your left through the intersection.
+
+I think that the following variables are necessary and sufficient to model
+state: `next_waypoint`, `light`, `oncoming`, and `left`. `Right` is not necessary because
+it is always possible to turn right, except if there is `oncoming` traffic from
+the `left` and the light is red, and that can be captured with the other state
+variables.
+
+>OPTIONAL: How many states in total exist for the smartcab in this environment? Does this number seem reasonable given that the goal of Q-Learning is to learn and make informed decisions about each state? Why or why not?
+
+Given that there are 4 possibilities for `next_waypoint`, 2 possible values for
+`left`, `light`, and `oncoming`, there are 32 (4x2x2x2) states. It seems
+reasonable, i.e., it is possible to learn the best actions for a given state in
+a reasonable amount of time, to learn the 32 possibilities and therefore make
+informed decisions. 
+
+## Implement a Q-Learning Driving Agent
 
 > Your final task for this project is to enhance your driving agent so that, after sufficient training, the smartcab is able to reach the destination within the allotted time safely and efficiently. Parameters in the Q-Learning algorithm, such as the learning rate (alpha), the discount factor (gamma) and the exploration rate (epsilon) all contribute to the driving agent’s ability to learn the best action for each state. To improve on the success of your smartcab:
 
