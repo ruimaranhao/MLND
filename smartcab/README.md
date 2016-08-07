@@ -123,4 +123,4 @@ The statistics for this version are not very encouraging:
 - The smartcab reached the destination, within the time limit, in 87% of the trials.
 The budget it took to finish is plotted below:
 
-![boxplot](MLND/smartcab/performance.png "boxplot")
+![boxplot](performance.png "boxplot")
