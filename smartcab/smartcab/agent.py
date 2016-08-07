@@ -3,7 +3,7 @@ from environment import Agent, Environment
 from planner import RoutePlanner
 from simulator import Simulator
 import matplotlib.pyplot as plt
-
+import numpy as np
 
 class LearningAgent(Agent):
     """An agent that learns to drive in the smartcab world."""
@@ -16,6 +16,8 @@ class LearningAgent(Agent):
         self.posreward = 0
         self.negreward = 0
         self.nreached = 0
+        self.trewards = {}
+        self.ntrial = 0
         self.budget = []
         self.qlearn = qlearn
         if self.qlearn:
@@ -31,6 +33,7 @@ class LearningAgent(Agent):
         self.planner.route_to(destination)
         # TODO: Prepare for a new trip; reset any variables here, if required
         self.state = None
+        self.ntrial += 1
 
     def policy(self, state, rnd = False):
         if rnd or len(self.valid_actions) == 0:
@@ -72,6 +75,21 @@ class LearningAgent(Agent):
                 self.valid_actions[self.state] = list(set(self.valid_actions.get(self.state, []) + [action]))
 
         #Collect statistics
+        r = self.trewards.get(self.ntrial, [0, 0, 0, 0, 0, 0])
+        if reward == -1:
+            r[0] += r[0] + 1
+        elif reward == 0.5:
+            r[1] += r[1] + 1
+        elif reward == 0:
+            r[2] += r[2] + 1
+        elif reward == 1:
+            r[3] += r[3] + 1
+        elif reward == 2:
+            r[4] += r[4] + 1
+        elif reward == 12:
+            r[5] += r[5] + 1
+        self.trewards[self.ntrial] = r
+
         if reward >= 0:
             self.posreward += 1.0
         else:
@@ -149,9 +167,9 @@ def run():
     e = Environment()  # create environment (also adds some dummy traffic)
 
     if qlearner:
-        alpha = 0.5
-        gamma = 0.2
-        epsilon = 0.05
+        alpha = 0.5 #learning rate
+        gamma = 0.2 #discount factor
+        epsilon = 0.05 #exploration rate
         a = e.create_agent(LearningAgent, qlearner, alpha, gamma, epsilon)
     else:
         a = e.create_agent(LearningAgent)  # create agent
@@ -159,18 +177,49 @@ def run():
     # NOTE: You can set enforce_deadline=False while debugging to allow longer trials
 
     # Now simulate it
-    sim = Simulator(e, update_delay=0.0005, display=True)  # create simulator (uses pygame when display=True, if available)
+    sim = Simulator(e, update_delay=0.0001, display=True)  # create simulator (uses pygame when display=True, if available)
     # NOTE: To speed up simulation, reduce update_delay and/or set display=False
 
     sim.run(n_trials=100)  # run for a specified number of trials
     # NOTE: To quit midway, press Esc or close pygame window, or hit Ctrl+C on the command-line
 
+    plot = False
+    if plot:
+        fig, ax = plt.subplots( nrows=1, ncols=1 )
+        ax.set_ylabel('Budget')
+        ax.set_xlabel('Trials')
+        ax.bar(range(1, len(e.primary_agent.budget) + 1), e.primary_agent.budget, color="blue")
+        fig.savefig('performance_{}.png'.format(alpha))
+        plt.close()
+
     fig, ax = plt.subplots( nrows=1, ncols=1 )
-    ax.set_ylabel('Budget')
+
+    width = 1.0
+    trwds = e.primary_agent.trewards
+    ind = np.arange(len(trwds))
+
+    vals_neg = []
+    vals_neutral = []
+    vals_pos = []
+    for key in trwds.keys():
+        vals_neg.append(trwds[key][0] + trwds[key][1])
+        vals_neutral.append(trwds[key][2])
+        vals_pos.append(trwds[key][3] + trwds[key][4] + trwds[key][5])
+
+    ax.bar(ind, vals_pos, color="blue", width = width - 0.5, label="Positive", alpha = 0.5)
+    ax.bar(ind, vals_neg, color="red", width = width - 0.5, label="Negative", alpha = 0.5)
+    ax.bar(ind, vals_neutral, color="green", width = width - 0.5, label="Neutral", alpha = 0.5)
+
+    ax.legend(loc='upper center', shadow=True)
+    ax.set_xticks(ind + (width / 2))
+    ax.set_xticklabels(trwds.keys())
     ax.set_xlabel('Trials')
-    ax.bar(range(1, len(e.primary_agent.budget) + 1), e.primary_agent.budget, color="blue")
-    fig.savefig('performance.png')
-    plt.close()
+    ax.set_yscale("log", nonposy='clip')
+    labels = ax.get_xticklabels()
+    plt.setp(labels, rotation=90, fontsize=5)
+
+    fig.savefig('rewards.png'.format(alpha))
+    plt.show()
 
 
 if __name__ == '__main__':

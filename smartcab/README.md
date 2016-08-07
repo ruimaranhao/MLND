@@ -122,13 +122,9 @@ Observe the driving agent’s learning and smartcab’s success rate, particular
 Adjust one or several of the above parameters and iterate this process.
 This task is complete once you have arrived at what you determine is the best combination of parameters required for your driving agent to learn successfully.
 
-> QUESTION: Report the different values for the parameters tuned in your basic implementation of Q-Learning. For which set of parameters does the agent perform best? How well does the final driving agent perform?
-
-> QUESTION: Does your agent get close to finding an optimal policy, i.e. reach the destination in the minimum possible time, and not incur any penalties? How would you describe an optimal policy for this problem?
-
 The Q-Learning policy implemented is best described using the following formula:
 
-![boxplot](performance.png "boxplot")
+![qlearning](qlearning.png "qlearning")
 
 Toggling between the simple Learning and the Q-Learning driving Agent is done
 by setting the following variable to False/True respectively:
@@ -137,20 +133,51 @@ by setting the following variable to False/True respectively:
 qlearner = True
 ```
 
+> QUESTION: Report the different values for the parameters tuned in your basic implementation of Q-Learning. For which set of parameters does the agent perform best? How well does the final driving agent perform?
+
 I tuned the Q-Learner to use the following parameters:
 
 ```python
-alpha = 0.5
+alpha = 0.7
 gamma = 0.2
 epsilon = 0.05
 ```
 
 The statistics using these parameters are:
 
-The statistics for this version are not very encouraging:
-- Overall, 7% of the actions gave a negative reward
-- Overall, 93% of the actions gave a positive reward
-- The smartcab reached the destination, within the time limit, in 87% of the trials.
+The statistics for this version are much better than the simple agent:
+- Overall, 5% of the actions gave a negative reward
+- Overall, 95% of the actions gave a positive reward
+- The smartcab reached the destination, within the time limit, in 97% of the trials.
 The budget it took to finish is plotted below:
 
-![boxplot](performance.png "boxplot")
+![boxplot](performance_0.7.png "boxplot")
+
+I have also changed the learning parameter (alpha) to other values. As an example,
+below the statistics for alpha = 0.5:
+
+The statistics for this version are much better than the simple agent:
+- Overall, 5% of the actions gave a negative reward
+- Overall, 95% of the actions gave a positive reward
+- The smartcab reached the destination, within the time limit, in 95% of the trials.
+The budget it took to finish is plotted below:
+
+![boxplot](performance_0.5.png "boxplot")
+
+Hence, reducing the learning rate means that there is a slight decrease in the
+number of trials that reach the final destination.
+
+> QUESTION: Does your agent get close to finding an optimal policy, i.e. reach the destination in the minimum possible time, and not incur any penalties? How would you describe an optimal policy for this problem?
+
+On average, the Q-Learning-based agent reaches the destination in 9 of 10 trials,
+whereas the naive, basic agent reaches the destination in 2 of 10 trials only.
+
+It is hard to calculate the optimal policy in such a dynamic environment. Moves
+that seem optimal may not really be because of the unpredictable behavior of
+other cars. I would however define an optimal policy as being one that go to the
+next way point without incurring negative rewards (as they may lead to accidents).
+
+The agent has learned this type of optimal policy, and no actions with negative
+rewards are performed after a few trials (note that the y-axis is in log-scale).
+
+![rewards](rewards.png "rewards")
