@@ -15,6 +15,7 @@ class LearningAgent(Agent):
         self.posreward = 0
         self.negreward = 0
         self.nreached = 0
+        self.budget = []
         self.qlearn = qlearn
         if self.qlearn:
             alpha = 0.5
@@ -79,6 +80,7 @@ class LearningAgent(Agent):
 
         if self.env.done: #check if reached destination
             self.nreached += 1.0
+            self.budget = self.budget + [deadline]
 
         print "LearningAgent.update(): deadline = {}, inputs = {}, action = {}, reward = {}".format(deadline, inputs, action, reward)  # [debug]
         print("Deadline: {}, Neg: {} , Pos: {}, Reach: {}".format(deadline,
@@ -163,6 +165,14 @@ def run():
 
     sim.run(n_trials=100)  # run for a specified number of trials
     # NOTE: To quit midway, press Esc or close pygame window, or hit Ctrl+C on the command-line
+
+    import matplotlib.pyplot as plt
+    fig, ax = plt.subplots( nrows=1, ncols=1 )
+    ax.set_ylabel('Budget')
+    ax.set_xlabel('Trials')
+    ax.bar(range(1, len(e.primary_agent.budget) + 1), e.primary_agent.budget, color="blue")
+    fig.savefig('performance.png')
+    plt.close()
 
 
 if __name__ == '__main__':
