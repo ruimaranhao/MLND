@@ -6,8 +6,7 @@ Reinforcement Learning Project for Udacity's Machine Learning Nanodegree.
 
 ### Install
 
-This project requires **Python 2.7** with the [pygame](https://www.pygame.org/wiki/GettingStarted
-) library installed.
+This project requires **Python 2.7** with the [pygame](https://www.pygame.org/wiki/GettingStarted) library installed.
 
 ### Code
 
@@ -111,7 +110,7 @@ Given that there are 4 possibilities for `next_waypoint`, 2 possible values for
 `left`, `light`, and `oncoming`, there are 32 (4x2x2x2) states. It seems
 reasonable, i.e., it is possible to learn the best actions for a given state in
 a reasonable amount of time, to learn the 32 possibilities and therefore make
-informed decisions. 
+informed decisions.
 
 ## Implement a Q-Learning Driving Agent
 
@@ -126,6 +125,10 @@ This task is complete once you have arrived at what you determine is the best co
 > QUESTION: Report the different values for the parameters tuned in your basic implementation of Q-Learning. For which set of parameters does the agent perform best? How well does the final driving agent perform?
 
 > QUESTION: Does your agent get close to finding an optimal policy, i.e. reach the destination in the minimum possible time, and not incur any penalties? How would you describe an optimal policy for this problem?
+
+The Q-Learning policy implemented is best described using the following formula:
+
+![boxplot](performance.png "boxplot")
 
 Toggling between the simple Learning and the Q-Learning driving Agent is done
 by setting the following variable to False/True respectively:

@@ -2,6 +2,7 @@ import random
 from environment import Agent, Environment
 from planner import RoutePlanner
 from simulator import Simulator
+import matplotlib.pyplot as plt
 
 
 class LearningAgent(Agent):
@@ -115,13 +116,13 @@ class QLearner():
 
         return action
 
-    def learn_q(self, state, action, reward, value):
+    def learn_q(self, state, action, reward, learned_value):
         ovalue = self.q.get((state, action), None)
 
         if ovalue == None:
             nvalue = reward
         else:
-            nvalue = ovalue + self.alpha * (value - ovalue)
+            nvalue = ovalue + self.alpha * (learned_value - ovalue)
 
         self.set_q(state, action, nvalue) #update
 
@@ -129,7 +130,7 @@ class QLearner():
         q = [self.get_q(new_state, a) for a in self.valid_actions]
         delayed_reward = int(max(q))
 
-        self.learn_q(state, action, reward, reward - self.gamma * delayed_reward)
+        self.learn_q(state, action, reward, reward + self.gamma * delayed_reward)
 
     #get table value with key
     def get_q(self, state, action):
@@ -164,7 +165,6 @@ def run():
     sim.run(n_trials=100)  # run for a specified number of trials
     # NOTE: To quit midway, press Esc or close pygame window, or hit Ctrl+C on the command-line
 
-    import matplotlib.pyplot as plt
     fig, ax = plt.subplots( nrows=1, ncols=1 )
     ax.set_ylabel('Budget')
     ax.set_xlabel('Trials')
