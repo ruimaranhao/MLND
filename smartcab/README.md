@@ -99,10 +99,12 @@ making a right turn or coming straight through the intersection.
 from your left through the intersection.
 
 I think that the following variables are necessary and sufficient to model
-state: `next_waypoint`, `light`, `oncoming`, and `left`. `Right` is not necessary because
-it is always possible to turn right, except if there is `oncoming` traffic from
-the `left` and the light is red, and that can be captured with the other state
-variables.
+state: `next_waypoint`, `light`, `oncoming`, and `left`. `Right` is not necessary
+because it is always possible to turn right, except if there is `oncoming` traffic
+from the `left` and the light is red, and that can be captured with the other state
+variables. I've not considered `budget` either because it will blow up the
+state space into a size that cannot be feasibly explored by the agent in 100
+trials.
 
 >OPTIONAL: How many states in total exist for the smartcab in this environment? Does this number seem reasonable given that the goal of Q-Learning is to learn and make informed decisions about each state? Why or why not?
 

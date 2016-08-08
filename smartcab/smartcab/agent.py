@@ -55,7 +55,7 @@ class LearningAgent(Agent):
 
         # Select action according to your policy
         if self.qlearn:
-            action = self.ql.select_action(self.state)
+            action = self.ql.select_action(self.state, t + 1)
         else:
             action = self.policy(self.state)
 
@@ -117,8 +117,8 @@ class QLearner():
     def poisson(self, eps):
         return random.random() < eps
 
-    def select_action(self, state):
-        if self.poisson(self.epsilon): #select random action
+    def select_action(self, state, decay):
+        if self.poisson(self.epsilon - (self.epsilon * float(1 / decay))): #select random action
             action = random.choice(self.valid_actions)
         else: # select the best available action
             q = [self.get_q(state, a) for a in self.valid_actions]
