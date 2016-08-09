@@ -108,11 +108,12 @@ trials.
 
 >OPTIONAL: How many states in total exist for the smartcab in this environment? Does this number seem reasonable given that the goal of Q-Learning is to learn and make informed decisions about each state? Why or why not?
 
-Given that there are 4 possibilities for `next_waypoint`, 2 possible values for
-`left`, `light`, and `oncoming`, there are 32 (4x2x2x2) states. It seems
-reasonable, i.e., it is possible to learn the best actions for a given state in
-a reasonable amount of time, to learn the 32 possibilities and therefore make
-informed decisions.
+Given that there are 3 possibilities for `next_waypoint` (`forward`, `left`, `right`)
+and 4 possibilities to `left`, and `oncoming` (`None`, `forward`, `left`, `right`),
+and 2 possibilities for `light` (`green`, `light`), then there are 96 (3x4x4x2)
+states. It seems reasonable, i.e., it is possible to learn the best actions for a
+given state in a reasonable amount of time, to learn the 96 possibilities and
+therefore make informed decisions.
 
 ## Implement a Q-Learning Driving Agent
 
@@ -134,6 +135,15 @@ by setting the following variable to False/True respectively:
 ```python
 qlearner = True
 ```
+
+> QUESTION: What changes do you notice in the agent's behavior when compared to the basic driving agent when random actions were always taken? Why is this behavior occurring?
+
+Compared to the basic driving agent, the Q-Learning Driving Agent is able to
+reach the destination in most of the trials, and safely (i.e., no violation of
+traffic rules) and efficiently (i.e., moving towards the destination). This is
+because the agent is learning what moves give positive/negative rewards in this
+environment -- meaning that the agent is not oblivious to state and previous
+experience.
 
 > QUESTION: Report the different values for the parameters tuned in your basic implementation of Q-Learning. For which set of parameters does the agent perform best? How well does the final driving agent perform?
 
@@ -166,6 +176,9 @@ The budget it took to finish is plotted below:
 
 ![boxplot](performance_0.5.png "boxplot")
 
+The plot above reports the budget (i.e., the time) spent to reach the final
+destination for the successful trials only.
+
 Hence, reducing the learning rate means that there is a slight decrease in the
 number of trials that reach the final destination.
 
@@ -183,3 +196,81 @@ The agent has learned this type of optimal policy, and no actions with negative
 rewards are performed after a few trials (note that the y-axis is in log-scale).
 
 ![rewards](rewards.png "rewards")
+
+
+### Suboptimal
+
+Below is the Q-table learnt after 100 trials: state, action, and reward.
+
+```
+{((('nwp', 'forward'), ('light', 'green'), ('oncoming', None), ('left', None)), None): 0.8187500000000001,
+ ((('nwp', 'forward'), ('light', 'green'), ('oncoming', None), ('left', None)), 'forward'): 8.104785270296833,
+ ((('nwp', 'forward'), ('light', 'green'), ('oncoming', None), ('left', None)), 'left'): 0.27812500000000007,
+ ((('nwp', 'forward'), ('light', 'green'), ('oncoming', None), ('left', None)), 'right'): 0.5,
+ ((('nwp', 'forward'), ('light', 'green'), ('oncoming', None), ('left', 'forward')), None): 0.0,
+ ((('nwp', 'forward'), ('light', 'green'), ('oncoming', None), ('left', 'forward')), 'forward'): 2.3,
+ ((('nwp', 'forward'), ('light', 'green'), ('oncoming', None), ('left', 'forward')), 'left'): -0.5,
+ ((('nwp', 'forward'), ('light', 'green'), ('oncoming', None), ('left', 'left')), None): 0.0,
+ ((('nwp', 'forward'), ('light', 'green'), ('oncoming', None), ('left', 'left')), 'forward'): 7.3,
+ ((('nwp', 'forward'), ('light', 'green'), ('oncoming', None), ('left', 'left')), 'left'): -0.5,
+ ((('nwp', 'forward'), ('light', 'green'), ('oncoming', None), ('left', 'left')), 'right'): -0.5,
+ ((('nwp', 'forward'), ('light', 'green'), ('oncoming', 'forward'), ('left', None)), 'right'): -0.5,
+ ((('nwp', 'forward'), ('light', 'green'), ('oncoming', 'left'), ('left', None)), None): 0.0,
+ ((('nwp', 'forward'), ('light', 'green'), ('oncoming', 'left'), ('left', None)), 'forward'): 2.375,
+ ((('nwp', 'forward'), ('light', 'green'), ('oncoming', 'left'), ('left', None)), 'left'): -0.5,
+ ((('nwp', 'forward'), ('light', 'green'), ('oncoming', 'left'), ('left', None)), 'right'): -0.5,
+ ((('nwp', 'forward'), ('light', 'green'), ('oncoming', 'right'), ('left', None)), 'left'): -1.0,
+ ((('nwp', 'forward'), ('light', 'red'), ('oncoming', None), ('left', None)), None): 0.0,
+ ((('nwp', 'forward'), ('light', 'red'), ('oncoming', None), ('left', None)), 'forward'): -1.0,
+ ((('nwp', 'forward'), ('light', 'red'), ('oncoming', None), ('left', None)), 'left'): -1.0,
+ ((('nwp', 'forward'), ('light', 'red'), ('oncoming', None), ('left', None)), 'right'): -0.5,
+ ((('nwp', 'forward'), ('light', 'red'), ('oncoming', None), ('left', 'forward')), 'right'): -1.0,
+ ((('nwp', 'forward'), ('light', 'red'), ('oncoming', None), ('left', 'left')), 'forward'): -1.0,
+ ((('nwp', 'forward'), ('light', 'red'), ('oncoming', 'forward'), ('left', None)), None): 0.0,
+ ((('nwp', 'forward'), ('light', 'red'), ('oncoming', 'forward'), ('left', None)), 'forward'): -1.0,
+ ((('nwp', 'forward'), ('light', 'red'), ('oncoming', 'forward'), ('left', None)), 'left'): -1.0,
+ ((('nwp', 'forward'), ('light', 'red'), ('oncoming', 'forward'), ('left', None)), 'right'): -0.5,
+ ((('nwp', 'forward'), ('light', 'red'), ('oncoming', 'left'), ('left', None)), None): 0.0,
+ ((('nwp', 'forward'), ('light', 'red'), ('oncoming', 'left'), ('left', None)), 'forward'): -1.0,
+ ((('nwp', 'forward'), ('light', 'red'), ('oncoming', 'left'), ('left', None)), 'left'): -1.0,
+ ((('nwp', 'forward'), ('light', 'red'), ('oncoming', 'left'), ('left', None)), 'right'): -0.5,
+ ((('nwp', 'forward'), ('light', 'red'), ('oncoming', 'left'), ('left', 'right')), 'right'): -0.5,
+ ((('nwp', 'forward'), ('light', 'red'), ('oncoming', 'right'), ('left', None)), None): 0.0,
+ ((('nwp', 'forward'), ('light', 'red'), ('oncoming', 'right'), ('left', None)), 'forward'): -1.0,
+ ((('nwp', 'forward'), ('light', 'red'), ('oncoming', 'right'), ('left', None)), 'right'): -0.5,
+ ((('nwp', 'left'), ('light', 'green'), ('oncoming', None), ('left', None)), None): 0.6000000000000001,
+ ((('nwp', 'left'), ('light', 'green'), ('oncoming', None), ('left', None)), 'forward'): 0.0,
+ ((('nwp', 'left'), ('light', 'green'), ('oncoming', None), ('left', None)), 'left'): 4.706250000024738,
+ ((('nwp', 'left'), ('light', 'green'), ('oncoming', None), ('left', None)), 'right'): -0.5,
+ ((('nwp', 'left'), ('light', 'green'), ('oncoming', 'forward'), ('left', None)), 'forward'): -0.5,
+ ((('nwp', 'left'), ('light', 'green'), ('oncoming', 'forward'), ('left', None)), 'right'): -0.5,
+ ((('nwp', 'left'), ('light', 'green'), ('oncoming', 'left'), ('left', None)), None): 0.0,
+ ((('nwp', 'left'), ('light', 'red'), ('oncoming', None), ('left', None)), None): 0.0,
+ ((('nwp', 'left'), ('light', 'red'), ('oncoming', None), ('left', None)), 'forward'): -1.0,
+ ((('nwp', 'left'), ('light', 'red'), ('oncoming', None), ('left', None)), 'left'): -1.0,
+ ((('nwp', 'left'), ('light', 'red'), ('oncoming', None), ('left', None)), 'right'): -0.5,
+ ((('nwp', 'left'), ('light', 'red'), ('oncoming', None), ('left', 'right')), 'right'): -0.5,
+ ((('nwp', 'left'), ('light', 'red'), ('oncoming', 'left'), ('left', None)), 'forward'): -1.0,
+ ((('nwp', 'left'), ('light', 'red'), ('oncoming', 'left'), ('left', None)), 'right'): -0.5,
+ ((('nwp', 'left'), ('light', 'red'), ('oncoming', 'right'), ('left', None)), 'left'): -1.0,
+ ((('nwp', 'right'), ('light', 'green'), ('oncoming', None), ('left', None)), None): 0.0,
+ ((('nwp', 'right'), ('light', 'green'), ('oncoming', None), ('left', None)), 'forward'): -0.5,
+ ((('nwp', 'right'), ('light', 'green'), ('oncoming', None), ('left', None)), 'left'): -0.5,
+ ((('nwp', 'right'), ('light', 'green'), ('oncoming', None), ('left', None)), 'right'): 2.5066650390625,
+ ((('nwp', 'right'), ('light', 'green'), ('oncoming', 'forward'), ('left', None)), 'right'): 2.2,
+ ((('nwp', 'right'), ('light', 'red'), ('oncoming', None), ('left', None)), None): 0.8,
+ ((('nwp', 'right'), ('light', 'red'), ('oncoming', None), ('left', None)), 'left'): -1.0,
+ ((('nwp', 'right'), ('light', 'red'), ('oncoming', None), ('left', None)), 'right'): 3.7126166466623545,
+ ((('nwp', 'right'), ('light', 'red'), ('oncoming', None), ('left', 'right')), None): 0.0,
+ ((('nwp', 'right'), ('light', 'red'), ('oncoming', 'forward'), ('left', None)), None): 0.0,
+ ((('nwp', 'right'), ('light', 'red'), ('oncoming', 'forward'), ('left', None)), 'forward'): -1.0}
+```
+
+After a detailed analysis of the table, we could see that the smartcab has not
+learned the following states/actions which are not desirable to take because
+they violate the US traffic rules. 
+```
+('nwp', 'left'), ('light', 'green'), ('oncoming', 'forward'), ('left', None)), 'left')
+('nwp', 'right'), ('light', 'red'), ('oncoming', 'None'), ('left', 'forward')), 'right')
+('nwp', 'right'), ('light', 'red'), ('oncoming', 'None'), ('left', None)), 'right')
+```

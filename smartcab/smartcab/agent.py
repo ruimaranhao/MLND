@@ -4,6 +4,7 @@ from planner import RoutePlanner
 from simulator import Simulator
 import matplotlib.pyplot as plt
 import numpy as np
+import pprint
 
 class LearningAgent(Agent):
     """An agent that learns to drive in the smartcab world."""
@@ -220,6 +221,8 @@ def run():
 
     fig.savefig('rewards.png'.format(alpha))
     plt.show()
+
+    pprint.pprint(e.primary_agent.ql.q)
 
 
 if __name__ == '__main__':
