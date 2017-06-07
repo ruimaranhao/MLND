@@ -14,6 +14,9 @@ import string
 from six.moves.urllib.request import urlretrieve
 from six.moves import cPickle as pickle
 
+from scipy import ndimage
+from scipy.misc import imresize
+
 last_percent_reported = None
 
 def download_progress_hook(count, blockSize, totalSize):
@@ -148,3 +151,59 @@ def maybe_pickle(struct, trainTuple, testTuple, extraTuple, force=False):
         print('Unable to save data to',  struct + '.pickle', ':', e)
 
     return  struct + '.pickle'
+
+
+#####
+#####
+
+pixel_depth = 255.0
+
+def load_image(image_file, path='train/', **box):
+    image_data = np.average(ndimage.imread(path + image_file.decode("utf-8")), axis=2)
+    if box['minTop'] <= 0: box['minTop'] = 0
+    if box['minLeft'] <= 0: box['minLeft'] = 0
+    image_data = image_data[int(box['minTop']):int(box['maxTopHeight']),
+                            int(box['minLeft']):int(box['maxLeftWidth'])]
+    image_data = imresize(image_data, (32,32))
+    image_data = (image_data.astype(float) - pixel_depth / 2) / pixel_depth
+    return image_data
+
+def load_images(dataset, struct):
+    images = dataset[struct]['images']
+    tops = dataset[struct]['tops']
+    widths = dataset[struct]['widths']
+    heights = dataset[struct]['heights']
+    lefts = dataset[struct]['lefts']
+    data = np.ndarray(shape=(images.shape[0], 32, 32), dtype=np.float32)
+
+    for i in range(data.shape[0]):
+        if (i % 5000 == 0):
+            print(i, "elapsed out of ", data.shape[0], "for: ", struct)
+        try:
+            if struct == 'valid':
+                path = 'extra/'
+            else:
+                path = struct + '/'
+            chrCount = dataset[struct]['labels'][i][dataset[struct]['labels'][i] > -1].shape[0]
+            topHeights = np.array([tops[i][:chrCount], heights[i][:chrCount]])
+            leftWidths = np.array([lefts[i][:chrCount], widths[i][:chrCount]])
+            image = load_image(images[i], path, **{
+                    "minTop": min(topHeights[0, :]),
+                    "minLeft": min(leftWidths[1, :]),
+                    "maxTopHeight": topHeights.sum(axis=0).max(),
+                    "maxLeftWidth": leftWidths.sum(axis=0).max()
+            })
+            data[i, :, :] = image
+        except Exception as e:
+            img = np.average(ndimage.imread(path+images[i]), axis=2)
+            print( i, chrCount,img.shape, {
+                "minTop": min(topHeights[0, :]),
+                "minLeft": min(leftWidths[1, :]),
+                "maxTopHeight": topHeights.sum(axis=0).max(),
+                "maxLeftWidth": leftWidths.sum(axis=0).max(),
+                "lefts": lefts[i],
+                "widths": widths[i],
+                "message": e.message
+            })
+            return
+    return data
