@@ -7,3 +7,12 @@ __pycache__/
 train/
 
 ../predictor/
+
+SVHN_MODEL.ckpt.data-00000-of-00001
+SVHN_MODEL.ckpt.index
+SVHN_MODEL.ckpt.meta
+checkpoint
+dataset.pickle
+extra/
+tensorflow_ready_data.pickle
+test/
