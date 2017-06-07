@@ -19,12 +19,13 @@ class Model(object):
 
     num_hidden1 = 64
 
-    def __init__(self):
+    def __init__(self, size):
         self.graph = tf.Graph()
         with self.graph.as_default():
 
           # Input data.
-          self.tf_test_dataset = tf.placeholder(tf.float32, shape=(10, 32, 32, 1))
+          self.tf_test_dataset = tf.placeholder(tf.float32,
+                                        shape=(size, self.image_size, self.image_size, self.num_channels))
 
           # Variables.
           layer1_weights = tf.get_variable("W1", shape=[self.patch_size, self.patch_size, self.num_channels, self.depth1],\
@@ -77,10 +78,11 @@ class Model(object):
             return [logits1, logits2, logits3, logits4, logits5]
 
           # Training computation.
-          [logits1, logits2, logits3, logits4, logits5] = model(self.tf_test_dataset, 1, [10, 32, 32, 1])
+          [logits1, logits2, logits3, logits4, logits5] = model(self.tf_test_dataset, 1, [size, self.image_size, self.image_size, self.num_channels])
 
           predict = tf.stack([tf.nn.softmax(logits1),tf.nn.softmax(logits2),tf.nn.softmax(logits3),\
                                  tf.nn.softmax(logits4),tf.nn.softmax(logits5)])
+                                 
           self.test_prediction = tf.transpose(tf.argmax(predict, 2))
 
           self.saver = tf.train.Saver()
