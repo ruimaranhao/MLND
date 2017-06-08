@@ -17,3 +17,5 @@ dataset.pickle
 extra/
 tensorflow_ready_data.pickle
 test/
+
+*.pickle
