@@ -3,6 +3,7 @@ __pycache__/
 
 *.tar.gz
 *.mat
+*.pyc
 
 train/
 
