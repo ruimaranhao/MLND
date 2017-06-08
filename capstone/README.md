@@ -47,7 +47,9 @@ This project requires **Python 3.0** and the following Python libraries installe
 - [Pillow](http://pypi.python.org/pypi/Pillow/)
 - [Flask](http://flask.pocoo.org/)
 
-[iPython Notebook](http://ipython.org/notebook.html) is required to run the
+To install them, go to the `code` folder and type `python install -r requirements.txt`. 
+
+Also, [iPython Notebook](http://ipython.org/notebook.html) is required to run the
 jupyter notebooks.
 
 ## Run
