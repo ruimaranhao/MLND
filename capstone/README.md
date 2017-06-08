@@ -54,3 +54,11 @@ jupyter notebooks.
 
 The exploratory notebooks can be run using `Ipython Notebook`. The webservice
 is run using python. 
+
+## Reference
+
+Yuval Netzer, Tao Wang, Adam Coates, Alessandro Bissacco, Bo Wu, Andrew Y. Ng Reading Digits in Natural Images with Unsupervised Feature Learning NIPS Workshop on Deep Learning and Unsupervised Feature Learning 2011. (PDF)
+
+URL: http://ufldl.stanford.edu/housenumbers
+
+For questions regarding the dataset, please contact streetviewhousenumbers@gmail.com
