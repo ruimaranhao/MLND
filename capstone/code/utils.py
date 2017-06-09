@@ -92,11 +92,11 @@ def load_data(path):
         w = get_attr(c, i, 'width')
         le = get_attr(c, i, 'left')
 
-        labels[i, :l.shape[0]] = l
-        tops[i, :t.shape[0]] = t
-        heights[i, :h.shape[0]] = h
-        widths[i, :w.shape[0]] = w
-        lefts[i, :le.shape[0]] = le
+        labels[i, : l.shape[0]] = l
+        tops[i, : t.shape[0]] = t
+        heights[i, : h.shape[0]] = h
+        widths[i, : w.shape[0]] = w
+        lefts[i, : le.shape[0]] = le
 
         if (i % 5000 == 0):
             print(i, "elapsed")
