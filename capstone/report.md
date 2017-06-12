@@ -11,16 +11,16 @@ June 8th, 2017
 
 Regarding it as a stochastic process, on any given day, there is approximately
 a 50% chance that the stock market will increase and a 50% chance that the
-stock market will decrease. If a trader is able to predict the direction the
-market will move with a probability significantly greater than 50%, then trader
-would have a significant competitive advantage.
+stock market will decrease. If a trader is able to predict the moving direction
+of the market with a probability significantly greater than 50%, then there will
+be a significant competitive advantage.
 
 There are several indices for monitoring the performance of the US stock market.
-In this project, we will use the the S&P500 index, which measures the performance of the stock
-prices of 500 of the largest publicly traded companies, and the CBOE's Volatility
-Index, known by its ticker symbol VIX, which a popular measure of the implied
-volatility of S&P 500 index options, calculated and published by the Chicago
-Board Options Exchange (CBOE).
+In this project, we will use the the S&P500 index, which measures the performance
+of the stock prices of 500 of the largest publicly traded companies, and the
+CBOE's Volatility Index, known by its ticker symbol VIX, which a popular measure
+of the implied volatility of S&P 500 index options, calculated and published by
+the Chicago Board Options Exchange (CBOE).
 
 Historical data for the S&P500 is widely available. For this project, over 23
 years of historical S&P500 [1] and Vix [2] data was downloaded from Yahoo!
@@ -69,7 +69,7 @@ In addition, the F1 Score of the benchmark and the model will be compared,
 since F1 provides the added insight of precision and recall. The F1 Score
 is defined as follows:
 
-F1 = 2 x (Precision x Recall) / (Precision + Recall)
+>F1 = 2 x (Precision x Recall) / (Precision + Recall)
 
 where
 
