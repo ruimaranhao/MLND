@@ -549,3 +549,5 @@ their API available).
 [6] Teixeira, Lamartine Almeida, and Adriano Lorena Inacio De Oliveira. "A method for automatic stock trading combining technical analysis and nearest neighbor classification." Expert systems with applications 37.10 (2010): 6885-6890.
 
 [7] Fischer, Thomas, and Christopher Krauß. Deep learning with long short-term memory networks for financial market predictions. No. 11/2017. FAU Discussion Papers in Economics, 2017.
+
+[8] https://elitedatascience.com/python-deep-learning-libraries
