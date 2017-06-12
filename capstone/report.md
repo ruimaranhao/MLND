@@ -307,7 +307,7 @@ all features were scaled (mean = 0; standard deviation = 1) and 1-hot encoding
 was conducted on the label data. The neural network consisted of 3 layers,
 containing 10, 5 and 2 nodes respectively. The layers weights were initialized
 with a mean of zero and standard deviation of 1. L2 regularization was added,
-with a lambda value of 10-5. Learning rate used exponential decay, with a
+with a lambda value of 10e-5. Learning rate used exponential decay, with a
 starting learning rate of 0.05, a decay_steps setting of 100,000 and a decay_rate
 of 0.98. Dropout was incorporated, with a default drop probability of 0.5 for
 each of the three layers. The default number of steps used was 10,000. Later,
@@ -321,36 +321,42 @@ the tuned parameters.
 
 | Model | Accuracy (%) | F1 Score |
 |-------|:------------:|:--------:|
-| baseline | 52.78 | 0.6909 |
-| DT  | 55.95 | 0.6050 |
-| NB  | 58.73 | 0.6750 |
-| SVC | 52.78 | 0.6909 |
-| RF  | 57.48 | 0.5748 |
+| baseline | 51.21 | 0.6774 |
+| DT  | 56.07 | 0.5766 |
+| NB  | 60.19 | 0.6918 |
+| SVC | 51.21 | 0.6774 |
+| RF  | 61.31 | 0.6230 |
 
-Most of the classifiers exhibited poor accuracy values, not being able to improve
-much over the benchmark as well as F1 scores at or below the benchmark. The only
-promising result were obtained with GaussianNB,  RF, and NN.
+Except for SVC, the classifiers are able to slightly improve over the baseline.
+The the standard parameters, we found that RF and NB are the most promising
+techniques, improving almost 10 points over the baseline predictions. F1 scores
+however remain identical.
 
 To improve on these results, grid search cross validation was performed on the
 DT, RF, and SVM classifiers. The following summarizes the results:
 
 | Model | Accuracy (%) | F1 Score | Parameters |
 |-------|:------------:|:--------:|------------|
-| DT  | 64.29 | 0.6763 | {'criterion': 'gini', 'max_depth': 3, 'splitter': 'best'} |
-| SVC | 63.49 | 0.7032 | {'C': 11, 'gamma': 1e-06, 'kernel': 'linear'}
-| RF  | 65.87 | 0.6906 | {'criterion': 'entropy', 'max_features': 'auto', 'n_estimators': 100, 'oob_score': True}
-| NN  | 61.90 | 0.6335 | discussed below |
+| DT  | 63.36 | 0.6763 | {'splitter': 'random', 'criterion': 'entropy', 'max_depth': 7}
+| SVC | 64.30 | 0.7066 | {'kernel': 'linear', 'C': 12, 'gamma': 1e-06}
+| RF  | 62.99 | 0.6667 | {'max_features': 'auto', 'n_estimators': 50, 'oob_score': True, 'criterion': 'entropy'}
+| NN  | 61.90 | 0.6335 | discussed below
 
-The best performing method are random forests, with higher accuracy but F1 score
-that is identical to the baseline benchmark. Albeit promising, NN suffer from the
-amount of data problem, as there may not be enough data for the NN to properly
-learn how to classify.
+The best performing method are SVC, with higher accuracy and F1 score when
+compared to the baseline. Albeit promising, NN suffer from the amount of data
+problem, as there may not be enough data for the NN to properly learn how to
+classify. Actually, after 7,000 steps, over fitting starts to become a problem,
+as seen in the figure below. The training accuracy continues to improve, it is
+a fact, but the validation and test results start to decline -- an indication of
+overfitting.
+
+![trainingNN](figs/NNTraining.png)
 
 ## IV. Results
 
 ### Model Evaluation and Validation
 
-The purpose of the machine-learning model developed here is to predict whether
+The purpose of classifier model is to predict whether
 the S&P500 will close higher than its opening price, on any given day.
 Ultimately, the goal would be to make profitable trading decisions using the
 model’s insights.
@@ -372,31 +378,98 @@ In the other benchmark scenario, the trader bought the index on day 1 and then h
 the index until the end of the test period (day 252), finally selling the index at
 the closing price on the last day.
 
-The trading scenario was simulated and the resulting cumulative is as follows:
+The trading scenario was simulated and the resulting cumulative is as follows,
+when trading using the SVM model:
 
-
-
-
-The difference between the benchmark strategies is stark. By the end of the 252-day test period, the neural network trading strategy has a cumulative profit of $1,793, more than 7 times higher than the benchmarks ($231 - $235). The strengths of the neural network predictions do not become apparent until after the first month or so (approximately look back day 230 on the chart), when the market starts to decline and the buy only based strategy stagnates or declines. At this point, there is a big reward for being able to accurately guess which days will see declines in value, and selling at the open, which is often what the neural network model is able to achieve. Performance statistics for the daily profit of the strategies8 are summarized in Table 5.
+![SVM](figs/simulation_SVM.png)
 
 
 ### Justification
 
-
+The difference between the benchmark strategies is promising. By the end of the
+252-day test period, the SVM trading strategy has a cumulative profit of $1,459,
+roughly 6.5 times higher than the benchmarks ($231, $235). The strengths of SVM
+predictions do not become apparent until after the first month or so (approximately
+look back day 230 on the chart), when the market starts to decline and the buy
+only based strategy stagnates or declines. At this point, there is a big reward
+for being able to accurately guess which days will see declines in value, and
+selling at the open, which is often what the neural network model is able to
+achieve.
 
 ## V. Conclusion
 
-
+In this project, a SVM classifier has been developed that predicts whether the
+S&P500 will close higher or lower than the opening price. The model exceeds
+the benchmark of assuming the market always closes higher, increasing the
+accuracy from 51.21% to 64.30%. This information can be used to drive a powerful
+trading strategy, allowing the trader to capitalize on both the up and down
+movements inherent to the stock market. To demonstrate the model’s potential,
+we have created a simulator to show the gains when using a machine learning-based
+trader.
 
 ### Free-Form Visualization
 
+The following plot demonstrates the potential of the classifier developed in
+the context of this project:
+
+![SVM](figs/simulation_SVM.png)
+
+The difference between the benchmark strategies is promising. By the end of the
+252-day test period, the SVM trading strategy has a cumulative profit of $1,459,
+roughly 6.5 times higher than the benchmarks ($231, $235).
 
 ### Reflection
 
+Attempting to predict the daily movement of the stock market can be reduced to a
+regression problem (e.g. trying to predict the actual price at which a stock or
+index will close) or a classification problem (e.g. trying to predict whether
+the market will close higher or lower, without too much concern for the actual
+final value). This project has attempted to tackle the problem in the
+classification form, as this is a question that has long been of interest to
+me in my professional career as an equity options trader, where directionality
+is often of more interest than the actual magnitude of the movement.
+
+In order to address this question, a collection of powerful machine learning
+classification methods have been utilized here. This collection included three
+‘off the shelf’ classifiers available via the Scikit-learn (sklearn) machine
+learning library, namely DecisionTreeClassifier, GaussianNB Random Forest, and
+SVM. With these models, GridSearchCV was utilized to perform a search over the
+machine learning parameter space, which led to optimal accuracy results. These
+results exceeded the benchmark accuracy by a meaningful amount and could be used
+to power successful trading strategies.
+
+The effort was taken a step further, by building a neural network ‘deep learning’
+model using the TensorFlow machine learning library. The model was manually tuned
+and ultimately delivered the best accuracy and F1 Scores relative to the benchmark
+case. This model was stress tested by evaluating its performance when trained
+(and not tuned) on a much larger set of market data. Under these conditions, it
+still performed well above benchmark and could power a trading strategy that
+delivered far superior profitability compared to a buy only strategy.
+
+One particularly interesting aspect of the results was that relatively modest
+gains in accuracy (53% benchmark vs. 64% fully tuned SVM) could lead to dramatic
+gains (6.5 times) in cumulative trading profitability over the course of the
+one-year test set. The final model exceeded my expectations for this problem.
+Improvements relative to the benchmark had been expected, but the magnitude of
+the improvements was pleasantly surprising.
 
 ### Improvement
 
+Albeit achieving interesting results, the model is not yet ready for real
+trading, but it already provides an interesting framework to pave the way to
+use classifiers in real trading scenarios. I think that one dimension that
+needs improvement is feature engineering: there might be other set of features
+with predictive power freely available online (news, twitter sentiment analysis,
+etc).
 
+The neuronal network is perhaps not well optimized at this point. My future plans
+are to try to better engineer the neuronal network in order to achieve better
+gains.
+
+I would also like to further explore different parameters and a wide range of
+possible values to tune the classifiers. Again, the framework is set, now one
+only needs to put let machines do their work to find the best configuration
+possible.
 
 # References
 
@@ -405,3 +478,13 @@ The difference between the benchmark strategies is stark. By the end of the 252-
 [2] https://finance.yahoo.com/quote/%5EVIX?p=^VIX
 
 [3] Udacity ‘Machine Learning for Trading’ Course
+
+[3] http://scikit-learn.org/
+
+[4] https://www.tensorflow.org/
+
+[5] Udacity ' Machine Learning Nano Degree' Course Material
+
+[6] Teixeira, Lamartine Almeida, and Adriano Lorena Inacio De Oliveira. "A method for automatic stock trading combining technical analysis and nearest neighbor classification." Expert systems with applications 37.10 (2010): 6885-6890.
+
+[7] Fischer, Thomas, and Christopher Krauß. Deep learning with long short-term memory networks for financial market predictions. No. 11/2017. FAU Discussion Papers in Economics, 2017.
