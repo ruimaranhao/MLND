@@ -114,10 +114,10 @@ The 10 raw data fields are as follows:
 
 #### Exploratory Visualization
 
-We have collected information for 5,962 trading days. The figure below presents
+We have collected information for 5,962 trading days. Figure 1 presents
 a plot of the S&P500 and VIX closing value for each of these days.
 
-![close values](figs/trading_close.png)
+![Close values](figs/trading_close.png)
 
 The S&P500 has generated considerable up and down movement over the 23 years, but
 has an upwards looking general trend. Given that there is significant range in
@@ -132,9 +132,10 @@ days ago corresponds to the ‘Great Recession’ of 2008.
 
 The trends seen for the other S&P500 and VIX related data (opening, high and
 low values for each) are very similar to those shown in the plots. The only
-other data in the raw data file is the S&P500 trading volume per day:
+other data in the raw data file is the S&P500 trading volume per day, as shown
+in Figure 2.
 
-![volume](figs/volume.png)
+![S&P500 Trading Volume per day](figs/volume.png)
 
 The S&P500 trading volume has generally trended up with time, although it peaked around the time of the ‘Great Recession’ and appears to have come down and stabilized since then.
 Given the properties of the raw data, normalization steps will be used for transforming all of the data to percentage changes relative to other days, as will be discussed in detail in the Methodology portion of this report. This type of normalization is required given the huge differences in absolute values for each of these data sets over the 20+ years under consideration here. In addition to normalization, new features will be ‘engineered’, based on various calculations conducted on the raw data set, ultimately arriving at 20 features for the machine learning algorithms.
@@ -150,7 +151,7 @@ Five supervised learning techniques were applied in this project:
 
 The first four techniques are available in the Python scikit-learn (sklearn)
 module. The NN was built using TensorFlow. Next we will motivate the usage of
-these techiques and give further details about the techniques.
+these techniques and give further details about the techniques.
 
 These four approaches were chosen since, except Decision Trees and Random Forests,
 they are significantly different from each other. I had the need to try different
@@ -268,7 +269,7 @@ The 21 features that were calculated are:
 
 - 1d_VIX_PtT: performs an identical calculation to that discussed for ‘1d_PtT’ except that VIX raw data is used instead of S&P500 data.
 
-After the feature engineering step, several rows of data needed to be discussed. First, any row with a ‘nan’ value was discarded. These ‘nan’ values were an expected outcome of the feature-engineering step. Specifically, the 252-day trailing return calculation could not be properly done on the first 253 data points, since there were no historical data on which to base the calculations. Applying ‘.dropna’ to the 5,962 row data set resulted in 253 drops and hence a data set consisting of 5,709 rows.
+After the feature engineering step, several rows of data needed to be discussed. First, any row with a ‘nan’ value was discarded. These ‘nan’ values were an expected outcome of the feature-engineering step. Specifically, the 252-day trailing return calculation could not be properly done on the first 253 data points, since there were no historical data on which to base the calculations. So, this was discarded, yielding a data set consisting of 5,709 rows.
 
 Second, it was observed that for a large number of the older data points (those points past approximately 8 years ago), the ‘SP_Open’ value on day n was identical to the ‘SP_Close’ value on day n-1. Since the probability of the S&P500 opening on any given day at a value exactly equal to the former day’s close is essentially zero, this data was considered unreliable. It is possible that the previous close was simply being pasted in as the new open for a large chunk of the data, due to a data generation anomaly. Therefore, any data row where the SP_Open was exactly equal to the previous day’s SP_Close field was discarded.
 
@@ -346,11 +347,11 @@ The best performing method are SVC, with higher accuracy and F1 score when
 compared to the baseline. Albeit promising, NN suffer from the amount of data
 problem, as there may not be enough data for the NN to properly learn how to
 classify. Actually, after 7,000 steps, over fitting starts to become a problem,
-as seen in the figure below. The training accuracy continues to improve, it is
+as seen in Figure 3. The training accuracy continues to improve, it is
 a fact, but the validation and test results start to decline -- an indication of
 overfitting.
 
-![trainingNN](figs/NNTraining.png)
+![Training Steps of NN](figs/NNTraining.png)
 
 ## IV. Results
 
@@ -378,10 +379,10 @@ In the other benchmark scenario, the trader bought the index on day 1 and then h
 the index until the end of the test period (day 252), finally selling the index at
 the closing price on the last day.
 
-The trading scenario was simulated and the resulting cumulative is as follows,
-when trading using the SVM model:
+The trading scenario was simulated and the resulting cumulative is displayed in
+Figure 4, when trading using the SVM model.
 
-![SVM](figs/simulation_SVM.png)
+![Cumulative Earnings using SVM](figs/simulation_SVM.png)
 
 
 ### Justification
@@ -412,7 +413,7 @@ trader.
 The following plot demonstrates the potential of the classifier developed in
 the context of this project:
 
-![SVM](figs/simulation_SVM.png)
+![Cumulative Earnings using SVM](figs/simulation_SVM.png)
 
 The difference between the benchmark strategies is promising. By the end of the
 252-day test period, the SVM trading strategy has a cumulative profit of $1,459,
