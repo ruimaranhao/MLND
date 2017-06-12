@@ -277,7 +277,7 @@ After discarding the data, the final data set consisted of 2,678 entries.
 
 ### Implementation
 
-Four supervised machine-learning classifiers were used:
+Five supervised machine-learning classifiers were used:
 - Decision Tree Classifier from sklearn
 - Gaussian Naïve Bayes from sklearn
 - Support Vector Machine SVC from sklearn
