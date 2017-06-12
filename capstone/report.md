@@ -112,6 +112,44 @@ The 10 raw data fields are as follows:
 - Vix_Low: lowest value on any given day for the VIX index
 - Vix_Close: closing value for the VIX index
 
+To give an idea about the values for the different fields, below is a
+concise summary of the dataset:
+
+```{verbatim}
+RangeIndex: 5962 entries, 0 to 5961
+Data columns (total 10 columns):
+>Date         5962 non-null datetime64[ns]
+SP_Open      5962 non-null float64
+SP_High      5962 non-null float64
+SP_Low       5962 non-null float64
+SP_Close     5962 non-null float64
+SP_Volume    5962 non-null int64
+Vix_Open     5962 non-null float64
+Vix_High     5962 non-null float64
+Vix_Low      5962 non-null float64
+Vix_Close    5962 non-null float64
+dtypes: datetime64[ns](1), float64(8), int64(1)
+memory usage: 465.9 KB
+```
+
+Furthermore, below are descriptive statistics that summarize the central tendency,
+dispersion and shape of a dataset’s distribution, excluding NaN values.
+
+| SP_Open | SP_High | SP_Low | SP_Close | SP_Volume | Vix_Open | Vix_High | Vix_Low | Vix_Close
+---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ----
+count | 5962 | 5962 | 5962 |5962 | 5962 | 5962 | 5962 | 5962 | 5962
+mean | 1.2e+03 | 1.2e+03 | 1.2e+03 | 1.2e+03 | 2.3e+09 | 20 | 21 | 19 | 20
+std | 4.3e+02 | 4.3e+02 | 4.3e+02 | 4.3e+02 | 1.8e+09 | 8.2 | 8.7 | 7.7 | 8.2
+min | 4.3e+02 | 4.3e+02 | 4.3e+02 | 4.3e+02 | 1.5e+07 | 9.2 | 9.6 | 8.9 | 9.3
+25% | 9.2e+02 | 9.3e+02 | 9.1e+02 | 9.2e+02 | 7.1e+08 | 14 | 14 | 13 | 14
+50% | 1.2e+03 | 1.2e+03 | 1.2e+03 | 1.2e+03 | 1.7e+09 | 18 | 19 | 17 | 18
+75% | 1.4e+03 | 1.4e+03 | 1.4e+03 | 1.4e+03 | 3.6e+09 | 24 | 24 | 23 | 23
+max | 2.2e+03 | 2.2e+03 | 2.2e+03 | 2.2e+03 | 1.1e+10 | 81 | 90 | 73 | 81
+
+Note that there are gaps in the date for weekends and holidays, and this may
+influence the classifier. For that matter, we will compute a feature that indicates
+whether the day after is a trading one or not.
+
 #### Exploratory Visualization
 
 We have collected information for 5,962 trading days. Figure 1 presents
@@ -288,13 +326,14 @@ The data was split as follows: 252 days (approximately one year) was used as the
 test set. The balance (2,426 rows) was used as the training set. In the case of
 the neural network, the training set was further split into a training set (1,922
 rows) and validation set (504 rows). It should be emphasized that the data was
-**NOT** shuffled prior to splitting between the test, validation and training sets.
+**not** shuffled prior to splitting between the test, validation and training sets.
 The reason for doing so is that the data set is a time series, so the most recent
 days are segregated for testing purposes, to avoid any risk of letting the
 classifiers see ‘the future’, which would be a risk if the data set was shuffled
 up and the test set was derived from some data that occurred earlier in time than
 the training set (This approach is recommended in the Udacity ‘Machine Learning
-for Trading’ Course [3])
+for Trading’ Course [3]). Note that the validation set (504 rows) comes after
+the training set.
 
 The sklearn algorithms were initially implemented using the default settings.
 They were tested against different training set sizes, to gauge the impact of
@@ -353,6 +392,17 @@ overfitting.
 
 ![Training Steps of NN](figs/NNTraining.png)
 
+Given these results, I suggest to proceed with the **SVC** classifier with the
+following parameters **{'kernel': 'linear', 'C': 12, 'gamma': 1e-06}**:
+- kernel = linear: Specifies the kernel type to be used in the algorithm.
+- C = 12: The C parameter tells the SVM optimization how much you want to avoid
+misclassifying each training example.
+- gamma = 1e-06: Kernel coefficient. This can be ingored because it turns out
+that the best kernel is learn. This parameter is the kernel coefficient for the
+‘rbf’, ‘poly’ and ‘sigmoid’ kernels.
+
+The analysis in the next section are obtained using SVM.
+
 ## IV. Results
 
 ### Model Evaluation and Validation
@@ -365,7 +415,7 @@ model’s insights.
 By simply always guessing that the market will close higher, one would be correct
 52.78% of the time for test set, whereas the RF based model would allow one to
 be correct 65.87% of the time. The question is whether this improvement in
-accuracy can be turned into a profitable trading strategy.
+accuracy can be turned into a profitable trading strategy or not.
 
 To address this question, a simulated trading scenario was conducted. If the model
 predicted a day would close lower, then the S&P500 index was sold at the opening
@@ -461,11 +511,13 @@ trading, but it already provides an interesting framework to pave the way to
 use classifiers in real trading scenarios. I think that one dimension that
 needs improvement is feature engineering: there might be other set of features
 with predictive power freely available online (news, twitter sentiment analysis,
-etc).
+etc). Also, it might be a good idea to include other features such as MACD and
+RSI. I also plan to plot them using financial plots from matplotlib (https://www.youtube.com/playlist?list=PLQVvvaa0QuDc2QjQOkZ4rtLYZVll_sZFZ).
 
 The neuronal network is perhaps not well optimized at this point. My future plans
 are to try to better engineer the neuronal network in order to achieve better
-gains.
+gains. In particular, I plan to study the accuracy of the Recurrent Neural Network
+as it would probably be more suitable here, as these are ideal for time series data.
 
 I would also like to further explore different parameters and a wide range of
 possible values to tune the classifiers. Again, the framework is set, now one
