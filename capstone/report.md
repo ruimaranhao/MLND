@@ -472,6 +472,10 @@ possible values to tune the classifiers. Again, the framework is set, now one
 only needs to put let machines do their work to find the best configuration
 possible.
 
+I actually plan to improve the current state of the classifiers and build
+an short-selling trader and connect it with, e.g., RobinHood (when they make
+their API available).
+
 # References
 
 [1] http://finance.yahoo.com/quote/%5EGSPC/history?p=%5EGSPC
