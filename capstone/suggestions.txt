@@ -1,0 +1,15 @@
+Tuning SVMs:
+
+Actually, it does have a bunch of hyper-parameters to be tuned to obtain good performance, such as max_features and min_sample_leaf, but I agree with you RFs are "easier" to tune than SVMs. If you are interested in studying this further, there is this nice tutorial on fine tuning RFs.
+
+Stock data features:
+
+http://machinelearningmastery.com/basic-feature-engineering-time-series-data-python/
+
+RNNs:
+
+Regarding your plan to study recurrent neural networks, it is worth noting that the can look daunting at first. Therefore, I am going to suggest you three links that can be really useful to clarify the main ideas, intuition and practical applications. The first one is a gentle introduction to recurring neural networks. The second link contains several points of view concerning LSTMs. Finally, the last link presents a tutorial on how to apply LSTMs in practice.
+
+Have you heard about the issue with temporal dependences? It may be the case the if today the price went UP then the chances of it going up tomorrow are higher. This is often the case for stock data, this is often referred to as temporal dependences. Check out this paper for further information on how it can be used as either a benchmark or a to "detect" this behavior and maybe even be enconded as a feature to your model.
+
+There is another important aspect that is often neglected in time series analysis called concept drifts. If you are applying your model in the real world, you might need to account for concept drifts. Basically, there are some factors that affect the price of a stock that are outside the scope of your input data, for example, if USA’s legislation changes and it affects the stocks of a bank you are analysing, then the price may go down or up. That is considered a concept drift, something changed outside your input features and now your model needs to be updated (basically the model is now irrelevant). You can also find information about that in the MOA book (link: http://moa.cms.waikato.ac.nz/documentation/). Concept drift detectors can be used along a classifier to detect sudden changes allowing you to "stop" trades as your model might be outdated.
